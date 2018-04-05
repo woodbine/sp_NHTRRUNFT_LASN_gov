@@ -84,7 +84,7 @@ def convert_mth_strings ( mth_string ):
 #### VARIABLES 1.0
 
 entity_id = "NHTRRUNFT_LASN_gov"
-url = "http://www.londonambulance.nhs.uk/talking_with_us/freedom_of_information/classes_of_information/what_we_spend_and_how_we_spend.aspx"
+url = "https://www.londonambulance.nhs.uk/talking-with-us/freedom-of-information/classes-of-information/what-we-spend-and-how-we-spend-it/"
 errors = 0
 data = []
 
@@ -96,21 +96,18 @@ soup = BeautifulSoup(html, 'lxml')
 
 #### SCRAPE DATA
 
-blocks = soup.find_all('a')
+blocks = soup.find_all('h4')
 for block in blocks:
-    try:
-        if 'idoc.' in block['href'] or '.xls' in block['href'] or '.xlsx' in block['href'] or '.pdf' in block['href']:
-            if 'CSV' in block.parent.text or 'XLS' in block.parent.text:
-                link = 'http://www.londonambulance.nhs.uk/talking_with_us/freedom_of_information/classes_of_information/'+block['href']
-                title = block.text.strip().split()
-                csvMth = title[0][:3]
-                csvYr = title[1][-4:]
-                if '.xls' in link:
-                    link = 'http://www.londonambulance.nhs.uk'+block['href']
-                csvMth = convert_mth_strings(csvMth.upper())
-                data.append([csvYr, csvMth, link])
-    except:
-        pass
+    if '20' in block.text:
+        uls = block.find_next('ul')
+        for ul in uls:
+            link = ul.find('a')['href']
+            title = ul.find('a').text.strip()
+            csvMth = title[:3]
+            csvYr = title.split('(')[0].strip()[-4:]
+            csvMth = convert_mth_strings(csvMth.upper())
+            data.append([csvYr, csvMth, link])
+
 
 #### STORE DATA 1.0
 
