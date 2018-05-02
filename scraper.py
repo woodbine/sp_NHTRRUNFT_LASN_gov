@@ -103,6 +103,7 @@ for block in blocks:
         for ul in uls:
             link = ul.find('a')['href']
             title = ul.find('a').text.strip()
+            title = title.replace('Transparency report ', '')
             csvMth = title[:3]
             csvYr = title.split('(')[0].strip()[-4:]
             csvMth = convert_mth_strings(csvMth.upper())
